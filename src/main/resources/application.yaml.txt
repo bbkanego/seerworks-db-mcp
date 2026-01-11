@@ -1,0 +1,44 @@
+logging:
+  config: classpath:logback-spring.xml
+
+server:
+  port: 8080
+  servlet:
+    context-path: /empdb-mcp
+
+spring:
+#  main:
+#    web-application-type: none
+  application:
+    name: seerworks-employee-db-mcp
+  datasource:
+    seerworks:
+      url: jdbc:postgresql://localhost:5432/seerworksdb?schema=employees
+      username: seerworks
+      password: seerworks
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+  # https://docs.spring.io/spring-ai/reference/api/vectordbs/pgvector.html
+  ai:
+    mcp:
+      server:
+        # turn on the STREAMABLE as the MCP protocol
+        protocol: streamable
+        stdio: false
+        type: sync
+        # if you are using @MCPTool and other annotations the below will scan for those.
+        # https://docs.spring.io/spring-ai/reference/api/mcp/mcp-annotations-server.html#_spring_boot_integration
+        annotation-scanner:
+          enabled: true
+        name: seerworks-employee-db-mcp
+        resource-change-notification: true
+        tool-change-notification: true
+        prompt-change-notification: true
+        version: 0.0.1
+        request-timeout: 120s
+        streamable-http:
+          # issue pings to connected clients to verify connection health
+          keep-alive-interval: 30s
+          #mcp-endpoint: /emp-db-mcp
+          disallow-delete: true
